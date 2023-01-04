@@ -1,0 +1,580 @@
+
+"""
+Нашёл очень толковое описание работы с переменными класса
+https://favtutor.com/blogs/static-variable-python
+
+Static Variable in Python (How to Create and Access it?)
+
+What is a Class?
+A class can be defined as a template or blueprint (to create objects),
+allowing data to be efficiently stored and worked on.
+It could also be assumed as a user-defined data type, with its own set of attributes
+and conditions.
+Attributes and methods are terms used to describe properties.
+
+What is an Object (instance)?
+An object is a class instance, that contains all of the attributes and
+functions defined in the template (class) including their values.
+(Assume it as a variable created for a data type.)
+
+A class may contain multiple instances, each holding a different value for the attributes,
+just like a data type can have many variables, each of which contains different values.
+
+(Don't get confused between object and variable.
+The above example is just an example for better understanding.)
+
+What is a Static Variable?
+Instance variables can be unique for each instance, but sometimes an attribute,
+common to the whole class is required. A static variable is a variable
+that remains common for the entire class, i.e. rather than creating a copy for each instance,
+the same memory space is shared by all instances.
+Static variables are also referred to as variables defined inside the class but outside
+the methods.
+
+Since the static variables are limited to a class, they are also known as class variables.
+Neither an object can affect the class variable, nor the static variable can alter an
+object's condition.
+
+Features of a Static Variable in Python
+1. A static variable is known as a class variable since it only belongs to the class
+   in which it is defined.
+2. All objects of the class share the same copy of the static variable.
+
+
+How to Create a Static Variable in Python?
+Programming languages always provide many methods to perform a task.
+There are many approaches to creating a static variable in Python.
+Let's take a look at a few of them...
+
+Method 1: Declaring the Variable in Class
+If you are familiar with other programming languages, you would have known
+the use of the 'static' keyword to declare static variables.
+Python does not have a 'static' keyword to declare the static variable.
+In Python, you simply declare a variable inside the class, note that it should
+not be inside any method, and that variable will be known as a static or class variable.
+
+#========================================================================================
+#Creating a blueprint (class) for lego blocks
+#Consider the dimensional unit to be in centimeters
+class Lego:
+    #Declare the static variables
+    width = 5   #static variable
+    height = 5  #static variable
+
+    #Declaring a constructor, taking length and colour as a parameter
+    #Remember 'self'(object) is passed to each method
+    def __init__(self, length, colour):
+        self.length = length #instance variable
+        self.colour = colour
+        print('Block of ' +colour +' colour is manufactured.')
+
+#Creating a lego block (object) of class Lego
+block1 = Lego(10, 'Red')
+block2 = Lego(5, 'Blue')
+#========================================================================================
+
+You'll notice that the attributes, width, and height, are the static variables since
+they are said to remain constant (or common) among the whole class.
+(I've inserted a print statement in the constructor for you to easily know about
+the generation of an object (lego block))
+
+Block of Red colour is manufactured.
+Block of Blue colour is manufactured.
+
+The above method is the easiest approach to creating a static variable.
+
+Method 2: Using hasattr() method
+Python also offers a hasattr() method, an in-built method to check whether the object
+(passed argument) has the given attribute or not.
+It returns True if the object has the given attribute (property) else it returns False.
+There are two ways to use the hasattr() method-
+
+a. Using hasattr() method in Constructor
+We can create a static variable by using the hasattr() method inside the constructor
+to check whether a class variable (static variable) is created or not.
+You should know that we can access static variables using the format -
+"className.staticVariable".
+
+Let's have a look at the code below on how to declare a static variable
+using hasattr() method in Constructor-
+
+#========================================================================================
+#Creating a blueprint (class) for lego blocks
+#Consider the dimensional unit to be in centimeters
+class Lego:
+
+    #Declaring a constructor, taking length and colour as a parameter
+    #Remember 'self'(object) is passed to each method
+    def __init__(self, length, colour):
+        #Checking whether class Lego has attribute width or not
+        if not hasattr(Lego, 'width'):
+            print('Static variable created')
+            Lego.width = 5  #class/static variable
+        if not hasattr(Lego, 'height'):
+            print('Static variable created')
+            Lego.height = 5     #class/static variable
+
+        self.length = length
+        self.colour = colour
+        print('Block of ' +colour +' colour is manufactured.')
+
+#Creating a lego block (object) of class Lego
+block1 = Lego(10, 'Red')
+block2 = Lego(5, 'Blue')
+#========================================================================================
+
+We have used 'not hasattr()' because since the parameter passed (i.e. our class Lego)
+does not have the attribute 'width' and 'height'. So, this method returns false when
+we create our first instance. I have added a print statement in both the if-blocks
+for better observation. The output occurs as-
+
+Static variable created
+Static variable created
+Block of Red colour is manufactured.
+Block of Blue colour is manufactured.
+
+You'll wonder why the line 'Static variable created' is not repeated after the creation
+of the first object (block1)? It is because once the variables 'width' and 'height'
+are created for the class Lego, then when the hasattr() method is called again,
+it returns False, i.e. the class Lego already has the mentioned attributes.
+
+b. Using hasattr() method inside a method
+This method is useful when you have to create a static variable only when
+a certain method is called.
+Assuming that a static variable named 'blocks' is to be added to our class.
+We can create a method, which introduces the 'blocks' variable to us.
+Check out the below code for a better reference -
+
+#========================================================================================
+#Creating a blueprint (class) for lego blocks
+#Consider the dimensional unit to be in centimeters
+class Lego:
+
+    #Declaring a constructor, taking length and colour as a parameter
+    #Remember 'self'(object) is passed to each method
+    def __init__(self, length, colour):
+        self.length = length
+        self.colour = colour
+        print('Block of ' +colour +' colour is manufactured.')
+
+    #Using method to create a static variable
+    def staticMethod(self):
+        if not hasattr(Lego, 'blocks'): #using hasattr() method
+            Lego.blocks = 12    #creating the class variable
+            print('Lego blocks staic variable is created')
+
+#Creating a lego block (object) of class Lego
+block1 = Lego(10, 'Red')
+block2 = Lego(5, 'Blue')
+#print(block1.blocks)
+block1.staticMethod()
+print(block1.blocks)    #accessing blocks static variable using object
+print(block2.blocks)    #accessing blocks static variable using object
+#========================================================================================
+
+You'll notice that if I were to run the comment #print(block1.blocks)
+before calling on the created staticMethod(), it would have given us an error
+since the static variable 'blocks' won't get created until you call the method.
+Output:
+
+Block of Red colour is manufactured.
+Block of Blue colour is manufactured.
+Lego blocks staic variable is created
+12
+12
+
+Did you notice how we didn't call for staticMethod() through our second object,
+yet it was able to access the 'blocks' variable? Hence, proving that our static
+variable is created.
+
+People often get confused between the methods to create static variables and static methods.
+The next time you see a method in a class made by using @staticmethod or @classmethod,
+don't get confused!
+It is just a way of creating a static variable using a static method.
+Well, that's a long topic itself!!
+
+How to Access Static Variables in Python?
+So far, we've learned how to create a static variable;
+now let's look at how to access these static variables so that we can use them.
+
+Method 1: Using Class Name
+We can directly call for a static variable (class variable) using the class name.
+There can be two use cases for the same-
+
+(i) Accessing the static variable in the class
+(ii) Calling the static variable in the main method
+
+#========================================================================================
+#Creating a blueprint (class) for lego blocks
+#Consider the dimensional unit to be in centimeters
+
+class Lego:
+    #Declare the static variables
+    width = 5   #static variable
+    height = 5  #static variable
+
+    #Declaring a constructor, taking length and colour as a parameter
+    def __init__(self, length, colour):
+        self.length = length #instance variable
+        self.colour = colour
+        print('Block of ' +colour +' colour is manufactured.')
+
+    #Creating a method to access static variables inside class
+    def printStatic(self):
+        print('The static values are: width = ', Lego.width, ' and height = ', Lego.height)
+
+#Creating a lego block (object) of class Lego
+block1 = Lego(10, 'Red')
+block2 = Lego(5, 'Blue')
+#calling static variable in main method using ClassName
+print(Lego.width)
+#Calling the method to display access of static variables
+block1.printStatic()
+
+
+Output:
+
+Block of Red colour is manufactured.
+Block of Blue colour is manufactured.
+5
+The static values are: width =  5  and height =  5
+#========================================================================================
+
+Notice how the static variables are accessed both, inside and outside the class,
+using the class name.
+
+Method 2: Using Object Name
+A class variable can also be called using the object's name. Have a look at the code below:
+
+#========================================================================================
+#Creating a blueprint (class) for lego blocks
+#Consider the dimensional unit to be in centimeters
+
+class Lego:
+    #Declare the static variables
+    width = 5   #static variable
+    height = 5  #static variable
+
+    #Declaring a constructor, taking length and colour as a parameter
+    def __init__(self, length, colour):
+        self.length = length #instance variable
+        self.colour = colour
+        print('Block of ' +colour +' colour is manufactured.')
+
+#Creating a lego block (object) of class Lego
+block1 = Lego(10, 'Red')
+block2 = Lego(5, 'Blue')
+#calling the static variables using instances-
+print(block1.width)
+print(block2.height)
+
+
+Output:
+
+Block of Red colour is manufactured.
+Block of Blue colour is manufactured.
+5
+5
+#========================================================================================
+
+Remember that in Python, you can only access static variables through objects.
+You cannot alter the static variable using an instance of the class.
+
+Помните, что в Python доступ к статическим переменным возможен только через объекты.
+Вы не можете изменить статическую переменную, используя экземпляр класса.
+
+Наверное, это не совсем правильно. Я не могу изменить значение КОРРЕКТНО.
+Чтобы при этом остальные зкземпляры класса сохранили бы свои значения,
+которые они ранее получили от данной статической переменной.
+
+For example -
+
+#========================================================================================
+#Creating a blueprint (class) for lego blocks
+#Consider the dimensional unit to be in centimeters
+
+class Lego:
+    #Declare the static variables
+    width = 5   #static variable
+    height = 5  #static variable
+
+    #Declaring a constructor, taking length and colour as a parameter
+    def __init__(self, length, colour):
+        self.length = length #instance variable
+        self.colour = colour
+        print('Block of ' +colour +' colour is manufactured.')
+
+#Creating a lego block (object) of class Lego
+block1 = Lego(10, 'Red')
+block2 = Lego(5, 'Blue')
+#calling the static variables using instances-
+print('Width of block 1: ', block1.width)
+print('Width of block 2: ', block2.height)
+block1.width = 10 #Accessing static variable through instance, to change its value
+print('Width of block 1: ', block1.width)
+print('Width of block 2: ', block2.width)
+print('Width of blocks: ', Lego.width)
+
+
+In the above code, we have attempted to change the value of the static variable 'width'
+using the object 'block1'.
+Output:
+
+Block of Red colour is manufactured.
+Block of Blue colour is manufactured.
+Width of block 1:  5
+Width of block 2:  5
+Width of block 1:  10
+Width of block 2:  5
+Width of blocks:  5
+
+#========================================================================================
+
+Remember that you cannot change the static variable with the object.
+It will only create a new instance of that variable for the object.
+This will not affect the entire class.
+
+Помните, что вы не можете изменить статическую переменную с помощью объекта.
+Он создаст только новый экземпляр этой переменной для объекта.
+Это не повлияет на весь класс.
+
+Изменение значения статической переменной для ВСЕХ объектов НЕ влияет на ВЕСЬ класс?
+Это Прикол...
+
+Method 3: Using the __class__ method
+Another way to access a static variable is using the __class__ method.
+You can access the static variable by calling upon this with the help of an object.
+Basic Syntax:
+
+objectName.__class__.staticVariableName
+
+It can be termed as indirectly accessing the static variable using the class name.
+Let's see its implementation below:
+
+#========================================================================================
+#Creating a blueprint (class) for lego blocks
+#Consider the dimensional unit to be in centimeters
+
+class Lego:
+    #Declare the static variables
+    width = 5   #static variable
+    height = 5  #static variable
+
+    #Declaring a constructor, taking length and colour as a parameter
+    def __init__(self, length, colour):
+        self.length = length #instance variable
+        self.colour = colour
+        print('Block of ' +colour +' colour is manufactured.')
+
+#Creating a lego block (object) of class Lego
+block1 = Lego(10, 'Red')
+block2 = Lego(5, 'Blue')
+#calling the static variables using __class__ method-
+print('Width of blocks: ', block1.__class__.width)
+#Note the importance of dot operator.
+#========================================================================================
+
+The .__class__. calls for the class of the instance (block1) and hence returns
+the value of the 'width' variable taking the class (Lego) as reference.
+
+Output:
+
+Block of Red colour is manufactured.
+Block of Blue colour is manufactured.
+Width of blocks:  5
+#========================================================================================
+
+Method 4: Using the type() method
+This method can be viewed as an indirect call to the static variable via Class.
+The type() method returns the data type of the variable we pass as an argument to it.
+Remember how we talked about the class being a user-defined data type?
+As a result, when an object is passed as an argument to the type() method,
+it will return the Class. Let's look at the syntax below -
+
+#========================================================================================
+#Creating a blueprint (class) for lego blocks
+#Consider the dimensional unit to be in centimeters
+
+class Lego:
+    #Declare the static variables
+    width = 5   #static variable
+    height = 5  #static variable
+
+    #Declaring a constructor, taking length and colour as a parameter
+    def __init__(self, length, colour):
+        self.length = length #instance variable
+        self.colour = colour
+        print('Block of ' +colour +' colour is manufactured.')
+
+#Creating a lego block (object) of class Lego
+block1 = Lego(10, 'Red')
+print('Height of block 1: ', block1.height )
+print("Height of blocks: ", type(block1).height)
+
+
+Output:
+
+Block of Red colour is manufactured.
+Height of block 1:  5
+Height of blocks:  5
+#========================================================================================
+
+Conclusion
+The methods listed above are simple ways to create and access a static variable in Python.
+It is also worth noting that accessing the static variable directly by its name
+is considered incorrect access and can result in errors in your program.
+You'll also find a few try-except methods while dealing with static methods in Python.
+These methods are simply another way to create and access static variables.
+There are many other ways in which static variables can be created and accessed.
+We leave it to you to explore more about them!
+
+Как то так... Одним словом, МОЛОДЦА!
+
+"""
+
+def test():
+    print('this is BankAccount')
+    doIt()
+
+def doIt():
+
+    #bnc = Banc()
+
+    Banc.CreateBancAccount(15.00)
+    Banc.CreateBancAccount(250.00)
+    Banc.CreateBancAccount(27.00)
+
+    Banc.typeBancAccounts()
+
+    retBnc = Banc.getBancAccountByNum(2)
+    if retBnc != None:
+        print(f'$$$$$ {retBnc.BancAccountID}...{retBnc.account} $$$$$')
+        #print(f'{ba0.__class__.account}...{ba1.__class__.account}...{Account.account}')
+
+    retBnc = Banc.getBancAccountByKey('0.02')
+    if retBnc != None:
+        print(f'&&&&& {retBnc.BancAccountID}...{retBnc.account} &&&&&')
+        #print(f'{ba0.__class__.account}...{ba1.__class__.account}...{Account.account}')
+
+    print(f'~~~~~~~~~~Banc.changeBancAccountByNum~~~~~~~~~~~~~~~~~~~~')
+    Banc.changeBancAccountByNum(1, -10.0)
+    Banc.typeBancAccounts()
+    print(f'~~~~~~~~~~Banc.changeBancAccountByKey~~~~~~~~~~~~~~~~~~~~')
+    Banc.changeBancAccountByKey(str(0.01), 11.0)
+    Banc.typeBancAccounts()
+    print(f'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+
+#========================================================================================
+class BancAccount:
+
+
+    def __init__(self, IDkey, initSum = 0.0):
+        self.BancAccountID = str(IDkey)
+        self.account = initSum
+
+    def plus(self, summ):
+        self.account = self.account + summ
+
+    def minus(self, summ):
+        self.account = self.account - summ
+
+    def printAccount(self):
+        print(f'{self.BancAccountID}...{self.account}')
+
+#========================================================================================
+
+class Banc:
+    CurrentBancAccountID = 0.00
+    BancAccounts = []      # Список банковских счетов
+    DictAccounts = {}      # Словарь банковских счетов.
+                           # Ключ - BancAccountID, значение - объект BancAccount
+
+    @staticmethod
+    def CreateBancAccount(Acc=10.00):
+        Banc.CurrentBancAccountID += 0.01
+        bnc = BancAccount(Banc.CurrentBancAccountID, Acc)
+        # bnc.printAccount()
+        Banc.BancAccounts.append(bnc)
+
+        # в банке реализован поиск объекта BancAccount
+        # по ключу в словаре (BancAccountID: BancAccount)
+        # для этого реализовано создание словаря
+
+        Banc.DictAccounts[bnc.BancAccountID] = bnc
+        xKeys = Banc.DictAccounts.keys()
+
+        # # print(f'>>>>>length is {len(Banc.BancAccounts)}<<<<<')
+        print(f'>>>>> {xKeys} <<<<<')
+
+ #=======================================================================================
+ # Здесь важно правильно спрашивать о количестве открытых в банке счетов и
+ #             правильно читать записанную в счетах инфориацию.
+ #             Возможны оба подхода. Второй короче.
+ #=======================================================================================
+
+
+        #i=0
+        #while i < len(Banc.BancAccounts):
+        #    print(f'{i}....{Banc.BancAccounts[i].BancAccountID}....{Banc.BancAccounts[i].account}')
+        #    i+=1
+
+        i = 0
+        for bnc in Banc.BancAccounts:
+            print(f'{i}....{bnc.BancAccountID}....{bnc.account}')
+            i += 1
+        print(f'>>>>>>>>>>>>>>><<<<<<<<<<<<<<<')
+
+    @staticmethod
+    def getBancAccountByNum(num):
+        listOfKeys = list(Banc.DictAccounts.keys())
+        try:
+            accKey = listOfKeys[num]
+        except IndexError as err:
+            print(f'{num}: {err}')
+            return None
+
+        bnc = Banc.DictAccounts[accKey]
+
+        print(f'{num} > {accKey}: {bnc.BancAccountID}....{bnc.account}')
+        return bnc
+
+    @staticmethod
+    def changeBancAccountByNum(num, summ):
+        bnc = Banc.getBancAccountByNum(num)
+        if bnc != None:
+            if summ != 0:
+                bnc.plus(summ)
+
+
+    @staticmethod
+    def getBancAccountByKey(accKey):
+
+        try:
+            bnc = Banc.DictAccounts[accKey]
+        except Exception:
+            print(f'key error: {accKey}')
+            return None
+
+        print(f'{accKey}: {bnc.BancAccountID}....{bnc.account}')
+        return bnc
+
+
+
+    @staticmethod
+    def changeBancAccountByKey(accKey, summ):
+        bnc = Banc.getBancAccountByKey(accKey)
+        if bnc != None:
+            if summ != 0:
+                bnc.plus(summ)
+
+
+    @staticmethod
+    def typeBancAccounts():
+        i = 0
+        for bnc in Banc.BancAccounts:
+            print(f'******{i}***********')
+            bnc.printAccount()
+            i+=1
+
+#========================================================================================
+
